@@ -1,74 +1,94 @@
-import React from 'react'
+import React, { useState } from 'react'
 import logo from './src/assets/images/logow.png'
-import { View, StatusBar, TextInput, Image, StyleSheet, Dimensions, ScrollView, Text } from 'react-native'
-import { SearchNormal1, DiscountShape, TicketDiscount, Gift, Star } from 'iconsax-react-native';
-
+import { View, StatusBar, TextInput, Image, StyleSheet, Dimensions, ScrollView, Text, TouchableOpacity, FlatList, LogBox } from 'react-native'
+import { SearchNormal1, DiscountShape, TicketDiscount, Gift, Star, ShoppingCart, Heart } from 'iconsax-react-native';
+import Feather from 'react-native-vector-icons/Feather'
+import { Product } from './data'
 
 const win = Dimensions.get('window')
+LogBox.ignoreAllLogs(true)
 
 export default function App() {
+
+  const [xtProduct, setxtProduct] = useState(false)
+
+  function ItemProduct({ item }) {
+    return (
+      <View style={styles.recContainer2}>
+        <Image style={styles.recImage} source={{ uri: item.image }} />
+        <TouchableOpacity onPress={() => onSelectedFav(item)} style={{ position: 'absolute', right: 0, padding: 2 }}>
+          <Heart variant={item.selected ? 'Bold' : 'linear'} color={item.selected ? '#FF8A65' : '#D1D1D1'} />
+        </TouchableOpacity>
+        <Text style={styles.recDesk}>{item.namaProduk}</Text>
+        <Text style={styles.recPrice}>{item.hargaProduk}</Text>
+      </View>
+    )
+  }
+
+  async function onSelectedFav(item) {
+    try {
+      item.selected = !item.selected
+      setxtProduct(!xtProduct)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
     <ScrollView style={styles.container}>
       <StatusBar backgroundColor={'rgba(0,0,0,0)'}></StatusBar>
-      <View style={ styles.header }></View>
-      <Image style={ styles.logoHeader } source={ logo }/>
-      <View style={ styles.searchContainer }>
-        <SearchNormal1 variant='Linear' color='#674D7A' style={{ marginLeft: 12, }} />
-        <TextInput style={ styles.search } placeholder='Search' placeholderTextColor={'#674D7A'}></TextInput>
+      <View style={styles.header}></View>
+      <Image style={styles.logoHeader} source={logo} />
+      <View style={styles.searchContainer}>
+        <View style={styles.searchContainer2}>
+          <SearchNormal1 variant='Linear' color='#674D7A' style={{ marginLeft: 12, }} />
+          <TextInput style={styles.search} placeholder='Search' placeholderTextColor={'#674D7A'}></TextInput>
+        </View>
+        <TouchableOpacity style={{ borderStartWidth: 1, borderColor: '#ddcfe8', justifyContent: 'center', paddingHorizontal: 16 }}>
+          <ShoppingCart variant='Linear' color='#674D7A' />
+        </TouchableOpacity>
       </View>
-      <View style={ styles.fiturContainer }>
-        <View style={ styles.fiturContainer2 }>
+      <View style={styles.fiturContainer}>
+        <View style={styles.fiturContainer2}>
           <DiscountShape size={32} variant='Linear' color='#674D7A' />
-          <Text style={ styles.fiturText }>Promotions</Text>
+          <Text style={styles.fiturText}>Promotions</Text>
         </View>
-        <View style={ styles.fiturContainer2 }>
+        <View style={styles.fiturContainer2}>
           <Gift size={32} variant='Linear' color='#674D7A' />
-          <Text style={ styles.fiturText }>New Arrivals</Text>
+          <Text style={styles.fiturText}>New Arrivals</Text>
         </View>
-        <View style={ styles.fiturContainer2 }>
+        <View style={styles.fiturContainer2}>
           <Star size={32} variant='Linear' color='#674D7A' />
-          <Text style={ styles.fiturText }>Best Sellers</Text>
+          <Text style={styles.fiturText}>Best Sellers</Text>
         </View>
-        <View style={ styles.fiturContainer2 }>
+        <View style={styles.fiturContainer2}>
           <TicketDiscount size={32} variant='Linear' color='#674D7A' />
-          <Text style={ styles.fiturText }>Vouchers</Text>
+          <Text style={styles.fiturText}>Vouchers</Text>
         </View>
       </View>
-      <ScrollView horizontal style={ styles.iklanContainer }>
-          <Image style={styles.iklanImage} source={{ uri: 'https://ganlop.com/wp-content/uploads/2021/06/FA_MO_061621_HYDRASTAY_MODEL-DUO-LANDSCAPE-BANNER-KV-01-1536x768.jpg' }} />
-          <Image style={styles.iklanImage} source={{ uri: 'https://cdn1-production-images-kly.akamaized.net/xt7Ibul8Ko40smrw0Iib0nblF1U=/680x383/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/4221439/original/001742300_1668058890-Landscape-MakeUp-Class-FF-2022.jpg' }} />
-          <Image style={styles.iklanImage} source={{ uri: 'https://assets.kompasiana.com/items/album/2023/09/29/kv-lipgloss-final-landscape-65164ce508a8b5796b441162.jpg?t=o&v=770' }} />
+      <ScrollView horizontal style={styles.iklanContainer}>
+        <Image style={styles.iklanImage} source={{ uri: 'https://ganlop.com/wp-content/uploads/2021/06/FA_MO_061621_HYDRASTAY_MODEL-DUO-LANDSCAPE-BANNER-KV-01-1536x768.jpg' }} />
+        <Image style={styles.iklanImage} source={{ uri: 'https://cdn1-production-images-kly.akamaized.net/xt7Ibul8Ko40smrw0Iib0nblF1U=/680x383/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/4221439/original/001742300_1668058890-Landscape-MakeUp-Class-FF-2022.jpg' }} />
+        <Image style={styles.iklanImage} source={{ uri: 'https://assets.kompasiana.com/items/album/2023/09/29/kv-lipgloss-final-landscape-65164ce508a8b5796b441162.jpg?t=o&v=770' }} />
       </ScrollView>
-      <Text style={ styles.recHeader }>Rekomendasi</Text>
-      <View style={styles.recContainer}>
-        <View style={styles.recContainer2}>
-          <Image style={styles.recImage} source={{ uri: 'https://dynamic.zacdn.com/q6ZkTf1fwJGrz-QGwWYR1KsYlzA=/filters:quality(70):format(webp)/https://static-id.zacdn.com/p/esqa-8531-6920504-1.jpg' }} />
-          <Text style={ styles.recDesk }>Esqa Eyeshadow</Text>
-          <Text style={ styles.recPrice }>Rp40.000</Text>
-        </View>  
-        <View style={styles.recContainer2}>
-        <Image style={styles.recImage} source={{ uri: 'https://enviostore.com/media/product/4457/product_image-1695820614.jpeg' }} />
-          <Text style={ styles.recDesk }>Hanasui Lipcream</Text>
-          <Text style={ styles.recPrice }>Rp19.000</Text>
-        </View>  
-      </View>
-      <View style={styles.recContainer}>
-        <View style={styles.recContainer2}>
-          <Image style={styles.recImage} source={{ uri: 'https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full//96/MTA-50385191/br-m036969-03955_maybelline-superstay-matte-ink-liquid-matte-lipstick-tahan-lama-hingga-16-jam_full02.jpg' }} />
-          <Text style={ styles.recDesk }>Maybeline Super Stay</Text>
-          <Text style={ styles.recPrice }>Rp98.000</Text>
-        </View>  
-        <View style={styles.recContainer2}>
-        <Image style={styles.recImage} source={{ uri: 'https://cdnapi.sooplai.com/media/CACHE/images/products/223435/POWD-MAYB-001D-1/63d19237648b2168d91f9f144fa2dc4d.jpg' }} />
-          <Text style={ styles.recDesk }>Maybeline Fit Me Powder</Text>
-          <Text style={ styles.recPrice }>Rp40.000</Text>
-        </View>  
-      </View>
+      <Text style={styles.recHeader}>Rekomendasi</Text>
+      <FlatList
+        data={Product}
+        extraData={xtProduct}
+        numColumns={2}
+        contentContainerStyle={styles.containerProduct}
+        keyExtractor={(item, idx) => idx.toString()}
+        renderItem={ItemProduct}
+      />
     </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  containerProduct : {
+    marginLeft: 8,
+    // paddingLeft : 16,
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
@@ -90,7 +110,7 @@ const styles = StyleSheet.create({
 
   searchContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    // alignItems: 'center',
     height: 52,
     elevation: 3,
     marginHorizontal: 14,
@@ -99,10 +119,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0FF',
   },
 
+  searchContainer2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
   search: {
     marginHorizontal: 8,
     color: '#674D7A',
-    width: win.width-112,
+    width: win.width - 138,
   },
 
   fiturContainer: {
@@ -124,14 +149,14 @@ const styles = StyleSheet.create({
 
   iklanContainer: {
     marginTop: 16,
-    height:232,
+    height: 232,
   },
 
   iklanImage: {
     marginTop: 16,
     borderRadius: 15,
-    width: win.width-16,
-    height:212,
+    width: win.width - 16,
+    height: 212,
     marginHorizontal: 8,
     resizeMode: 'contain',
   },
@@ -154,6 +179,7 @@ const styles = StyleSheet.create({
   },
 
   recContainer2: {
+    marginRight : 20,
     height: 200,
   },
 
