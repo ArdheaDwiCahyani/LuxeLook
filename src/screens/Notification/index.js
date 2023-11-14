@@ -5,7 +5,6 @@ import { ArrowLeft, Setting2, InfoCircle } from 'iconsax-react-native'
 export default function Notification() {
     return (
         <ScrollView style={styles.container}>
-            <StatusBar backgroundColor={'rgba{0,0,0,0}'}></StatusBar>
             <View style={styles.headerContainer}>
                 <TouchableOpacity>
                     <ArrowLeft size={20} variant='Linear' color='black' />
@@ -59,12 +58,13 @@ const styles = StyleSheet.create({
 
     headerContainer: {
         backgroundColor: 'white',
-        height: 60,
-        alignItems: 'center',
+        height: 72,
+        alignItems: 'flex-end',
         paddingHorizontal: 16,
         borderBottomWidth: 1,
         borderColor: '#d3d3d3',
         flexDirection: 'row',
+        paddingBottom: 16,
     },
 
     iconContainer: {

@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <ScrollView style={styles.container}>
-      <StatusBar backgroundColor={'rgba(0,0,0,0)'}></StatusBar>
+      <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} barStyle={'dark-content'}/>
       <View style={styles.header}></View>
       <Image style={styles.logoHeader} source={logo} />
       <View style={styles.searchContainer}>

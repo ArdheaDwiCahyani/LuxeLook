@@ -8,7 +8,6 @@ const win = Dimensions.get('window')
 export default function Account() {
     return (
         <ScrollView style={styles.container}>
-            <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'}></StatusBar>
             <View style={styles.headerContainer}>
                 <TouchableOpacity style={styles.cartContainer}>
                     <Setting2 variant='Linear' color='white'/>

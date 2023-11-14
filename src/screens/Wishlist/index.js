@@ -1,19 +1,20 @@
 import React from 'react'
 import { View, Text, Image, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Dimensions, FlatList } from 'react-native'
 import { Heart, ArrowLeft, Notification, ShoppingCart } from 'iconsax-react-native'
+import { useNavigation } from '@react-navigation/native'
 
 const win = Dimensions.get('window')
 
 export default function Wishlist() {
+    const navigation = useNavigation()
     return (
         <ScrollView style={styles.container}>
-            <StatusBar backgroundColor={'rgba(0,0,0,0)'}></StatusBar>
             <View style={styles.headerContainer}>
                 <TouchableOpacity>
                     <ArrowLeft size={20} variant='Linear' color='black' />
                 </TouchableOpacity>
                 <Text style={{ fontWeight: '500', paddingLeft: 14, fontSize: 16, color: 'black' }}> Wishlist </Text>
-                <TouchableOpacity style={styles.iconContainer}>
+                <TouchableOpacity style={styles.iconContainer} onPress={()=> navigation.navigate('Notification')}>
                     <Notification size={20} variant='Linear' color='black' />
                 </TouchableOpacity>
                 <TouchableOpacity>
@@ -72,9 +73,10 @@ const styles = StyleSheet.create({
     },
 
     headerContainer: {
-        height: 54,
-        alignItems: 'center',
+        height: 72,
+        alignItems: 'flex-end',
         paddingHorizontal: 16,
+        paddingBottom: 16,
         borderBottomWidth: 1,
         borderColor: '#d3d3d3',
         flexDirection: 'row',
