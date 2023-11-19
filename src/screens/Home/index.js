@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import logo from '../../assets/images/logow.png'
 import { View, StatusBar, TextInput, Image, StyleSheet, Dimensions, ScrollView, Text, TouchableOpacity, FlatList, LogBox } from 'react-native'
 import { SearchNormal1, DiscountShape, TicketDiscount, Gift, Star, ShoppingCart, Heart } from 'iconsax-react-native';
-import Feather from 'react-native-vector-icons/Feather'
 import { Product } from '../../../data';
+import Onboarding from '../../components/Onboarding';
 
 const win = Dimensions.get('window')
 LogBox.ignoreAllLogs(true)
@@ -66,11 +66,9 @@ export default function Home() {
           <Text style={styles.fiturText}>Vouchers</Text>
         </View>
       </View>
-      <ScrollView horizontal style={styles.iklanContainer}>
-        <Image style={styles.iklanImage} source={{ uri: 'https://ganlop.com/wp-content/uploads/2021/06/FA_MO_061621_HYDRASTAY_MODEL-DUO-LANDSCAPE-BANNER-KV-01-1536x768.jpg' }} />
-        <Image style={styles.iklanImage} source={{ uri: 'https://cdn1-production-images-kly.akamaized.net/xt7Ibul8Ko40smrw0Iib0nblF1U=/680x383/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/4221439/original/001742300_1668058890-Landscape-MakeUp-Class-FF-2022.jpg' }} />
-        <Image style={styles.iklanImage} source={{ uri: 'https://assets.kompasiana.com/items/album/2023/09/29/kv-lipgloss-final-landscape-65164ce508a8b5796b441162.jpg?t=o&v=770' }} />
-      </ScrollView>
+      <View style={styles.iklanContainer}>
+        <Onboarding/>
+      </View>
       <Text style={styles.recHeader}>Rekomendasi</Text>
       <FlatList
         data={Product}
@@ -150,15 +148,6 @@ const styles = StyleSheet.create({
   iklanContainer: {
     marginTop: 16,
     height: 232,
-  },
-
-  iklanImage: {
-    marginTop: 16,
-    borderRadius: 15,
-    width: win.width - 16,
-    height: 212,
-    marginHorizontal: 8,
-    resizeMode: 'contain',
   },
 
   recContainer: {
