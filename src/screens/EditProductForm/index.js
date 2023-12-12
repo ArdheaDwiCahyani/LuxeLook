@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { ArrowLeft } from "iconsax-react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 
-const AddProductForm = () => {
+const EditProductForm = () => {
+
+    const route = useRoute()
 
     const [productData, setProductData] = useState({
-        nameProduct : '',
-        merk: '',
-        price : 0,
-        description : '',
-        image : '',
+        nameProduct : route.params?.data.name,
+        merk: route.params?.data.merk,
+        price : route.params?.data.price.toString(),
+        description : route.params?.data.description,
+        image : route.params?.data.image,
     });
 
     const handleChange = (key, value) => {
@@ -22,8 +24,9 @@ const AddProductForm = () => {
     };
 
     async function addData() {
-        const data = await fetch('https://657585a9b2fbb8f6509d2fda.mockapi.io/luxelook/products', {
-            method: 'POST',
+        var id=route.params?.data.id
+        const data = await fetch('https://657585a9b2fbb8f6509d2fda.mockapi.io/luxelook/products/' + id, {
+            method: 'PUT',
             headers: {
                 'Content-type': 'application/json',
             },
@@ -32,10 +35,11 @@ const AddProductForm = () => {
                 merk: productData.merk,
                 image: productData.image,
                 description: productData.description,
+                category: productData.category,
                 price: parseInt(productData.price),
             })
         })
-        navigation.navigate('Home')
+        navigation.navigate('Home', {isLoading:Math.random()})
         console.log(await data.json())
     }
 
@@ -48,7 +52,7 @@ const AddProductForm = () => {
                     <ArrowLeft color='#ffffff' variant="Linear" size={24} />
                 </TouchableOpacity>
                 <View style={{ flex: 1, alignItems: "center" }}>
-                    <Text style={styles.nameProduct}>Add Product</Text>
+                    <Text style={styles.nameProduct}>Edit Product</Text>
                 </View>
             </View>
             <ScrollView
@@ -123,7 +127,7 @@ const AddProductForm = () => {
     );
 };
 
-export default AddProductForm;
+export default EditProductForm;
 
 const styles = StyleSheet.create({
     container: {
