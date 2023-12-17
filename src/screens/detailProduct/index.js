@@ -1,41 +1,102 @@
-import React from "react";
-import { View, Text, Image, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native'
+import React, { useState, useRef, useEffect } from "react";
+import { View, Text, Image, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Dimensions, RefreshControl, useCallback } from 'react-native'
 import { ArrowLeft, Setting2, InfoCircle, Bag2, More, Heart, Star1, Edit, Trash } from 'iconsax-react-native'
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useIsFocused, useNavigation, useRoute } from "@react-navigation/native";
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import ActionSheet from 'react-native-actions-sheet';
 
-export default function detailProduct() {
-    async function deleteData() {
-        var id = route.params?.data.id
-        const data = await fetch('https://657585a9b2fbb8f6509d2fda.mockapi.io/luxelook/products/' + id, {
-            method: 'DELETE',
-            headers: {
-                'Content-type': 'application/json',
-            },
-        })
-        nav.navigate('Home', { isLoading: Math.random() })
-        console.log(await data.json())
-    }
-    const nav = useNavigation()
+export default function DetailProduct() {
+    //     async function deleteData() {
+    //         var id = route.params?.data.id
+    //         const data = await fetch('https://657585a9b2fbb8f6509d2fda.mockapi.io/luxelook/products/' + id, {
+    //             method: 'DELETE',
+    //             headers: {
+    //                 'Content-type': 'application/json',
+    //             },
+    //         })
+    //         nav.navigate('Home', { isLoading: Math.random() })
+    //         console.log(await data.json())
+    //     }
+    const route = useRoute()
+    const [loading, setLoading] = useState(true);
+    const [selectedProduct, setSelectedProduct] = useState(null);
+    const actionSheetRef = useRef(null);
+    const openActionSheet = () => {
+        actionSheetRef.current?.show();
+    };
+    const closeActionSheet = () => {
+        actionSheetRef.current?.hide();
+    };
+
+    useEffect(() => {
+        console.log(route.params?.data.id);
+        // const subscriber = firestore()
+        //     .collection('product')
+        //     .doc(route.params?.data.id)
+        //     .onSnapshot(documentSnapshot => {
+        //         const productData = documentSnapshot.data();
+        //         if (productData) {
+        //             console.log('Product data: ', productData);
+        //             setSelectedProduct(productData);
+        //         } else {
+        //             console.log(`Product with ID ${productId} not found.`);
+        //         }
+        //     });
+        // setLoading(false);
+        // return () => subscriber();
+    }, [route.params?.isLoading]);
+
+    const navigateEdit = () => {
+        closeActionSheet();
+        navigation.navigate('editProduct', { data: route.params?.data });
+    };
+
+    const handleDelete = async () => {
+        setLoading(true);
+        try {
+            await firestore()
+                .collection('product')
+                .doc(route.params?.data.id)
+                .delete()
+                .then(() => {
+                    console.log('Product deleted!');
+                });
+            if (selectedProduct?.image) {
+                const imageRef = storage().refFromURL(selectedProduct?.image);
+                await imageRef.delete();
+            }
+            console.log('Product deleted!');
+            closeActionSheet();
+            setSelectedProduct(null);
+            setLoading(false)
+            navigation.navigate('Home');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const navigation = useNavigation()
     const iconCount = 5;
     const iconsArray = Array.from({ length: iconCount }, (v, i) => i)
-
-    const route = useRoute()
     const item = route.params?.data
+    // const {productId} = route.params;
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.headerContainer}>
-                <View style={{ flexDirection: "row", alignItems: "center"}}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TouchableOpacity>
                         <ArrowLeft size={20} variant='Linear' color='black' />
                     </TouchableOpacity>
-                    <Text style={{ fontWeight: '500', paddingLeft: 14, fontSize: 16, color: 'black', paddingEnd: 36 }}> {route.params?.data.name} </Text>
+                    <Text style={{ fontWeight: '500', paddingLeft: 14, fontSize: 16, color: 'black', paddingEnd: 36 }}> {route.params?.data.nameProduct} </Text>
                 </View>
                 <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={() => nav.navigate('editProduct', { data: item })}>
-                        <Edit size={22} variant='Linear' color='#752680' />
+                    <TouchableOpacity>
+                        <Bag2 size={22} variant='Linear' color='#752680' />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={deleteData}>
-                        <Trash size={22} variant='Linear' color='#752680' style={{ marginLeft: 12 }} />
+                    <TouchableOpacity onPress={openActionSheet}>
+                        <More size={22} variant='Linear' color='#752680' style={{ marginLeft: 12 }} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -54,7 +115,7 @@ export default function detailProduct() {
             {/* tampilan caption product */}
             <View style={styles.captProduct}>
                 <Text style={{ marginTop: 10, marginBottom: 5, fontWeight: 700, letterSpacing: 0.8, fontSize: 16, color: 'black' }}>{route.params?.data.merk}</Text>
-                <Text style={{ marginBottom: 5, fontWeight: 300, letterSpacing: 0.8, fontSize: 16, color: 'black' }}>{route.params?.data.name}</Text>
+                <Text style={{ marginBottom: 5, fontWeight: 300, letterSpacing: 0.8, fontSize: 16, color: 'black' }}>{route.params?.data.nameProduct}</Text>
                 <Text style={{ marginBottom: 5, fontWeight: 600, fontSize: 14, color: '#6D4D8C' }}>Rp{route.params?.data.price}</Text>
                 <View style={{ flexDirection: 'row' }}>
                     {iconsArray.map((index) => (
@@ -75,11 +136,68 @@ export default function detailProduct() {
                 </Text>
                 <Text style={{ textDecorationLine: 'underline', marginTop: 8, color: '#6D4D8C', fontSize: 10, fontWeight: 700, lineHeight: 13.5, }}>SEE MORE</Text>
             </View>
-
-
+            <ActionSheet
+                ref={actionSheetRef}
+                containerStyle={{
+                    borderTopLeftRadius: 25,
+                    borderTopRightRadius: 25,
+                    backgroundColor: '#A793BA'
+                }}
+                indicatorStyle={{
+                    width: 100,
+                }}
+                gestureEnabled={true}
+                defaultOverlayOpacity={0.3}>
+                <TouchableOpacity
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
+                    }}
+                    onPress={navigateEdit}
+                >
+                    <Text
+                        style={{
+                            color: 'white',
+                            fontSize: 18,
+                        }}>
+                        Edit
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
+                    }}
+                    onPress={handleDelete}>
+                    <Text
+                        style={{
+                            color: 'white',
+                            fontSize: 18,
+                        }}>
+                        Delete
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingVertical: 15,
+                    }}
+                    onPress={closeActionSheet}>
+                    <Text
+                        style={{
+                            color: 'black',
+                            fontSize: 18,
+                        }}>
+                        Cancel
+                    </Text>
+                </TouchableOpacity>
+            </ActionSheet>
         </ScrollView>
     )
-}
+};
 
 const styles = StyleSheet.create({
     container: {

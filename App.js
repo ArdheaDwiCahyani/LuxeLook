@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Heart, Home3, ProfileCircle } from 'iconsax-react-native';
-import detailProduct from './src/screens/detailProduct';
+import DetailProduct from './src/screens/detailProduct';
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -26,7 +26,7 @@ export default function App() {
         <Stack.Screen options={{ headerShown: false }} name='Bottom' component={Bottom} />
         <Stack.Screen options={{ headerShown: false }} name='Notification' component={Notification} />
         <Stack.Screen options={{ headerShown: false }} name='AddProduct' component={AddProductForm}/>
-        <Stack.Screen options={{ headerShown: false }} name='detailProduct' component={detailProduct}/>
+        <Stack.Screen options={{ headerShown: false }} name='DetailProduct' component={DetailProduct}/>
         <Stack.Screen options={{ headerShown: false }} name='editProduct' component={EditProductForm}/>
       </Stack.Navigator>
     </NavigationContainer>

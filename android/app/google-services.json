@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "264236128110",
+    "project_id": "luxelookapp",
+    "storage_bucket": "luxelookapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264236128110:android:f3b9adac51c062609e537f",
+        "android_client_info": {
+          "package_name": "com.luxelook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBM-i4q-XA2IIdGEcAoPgFKBh23YK57NM4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,12 +1,14 @@
-import React from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { View, Text, Image, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native'
 import { BoxTime, BoxRemove, Trash, TruckTime, Add, Setting2, ShoppingCart, Note, ArrowRight2, Wallet, Box, TruckFast, MedalStar, Key, Location, ProfileDelete, MessageQuestion, LogoutCurve } from 'iconsax-react-native'
 import profile from '../../assets/images/profile.jpg'
 import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore';
 
 const win = Dimensions.get('window')
 const Account = () => {
     const navigation = useNavigation();
+    
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -93,7 +95,7 @@ const Account = () => {
                 style={styles.floatingButton}
                 onPress={() => navigation.navigate("AddProduct")}
             >
-                <Add color= '#FFFFFF' variant='Linear' size={24}/>
+                <Add color='#FFFFFF' variant='Linear' size={24} />
             </TouchableOpacity>
         </View>
     )
@@ -242,12 +244,12 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         shadowColor: '#F3F3F3',
         shadowOffset: {
-          width: 0,
-          height: 4,
+            width: 0,
+            height: 4,
         },
         shadowOpacity: 0.3,
         shadowRadius: 4.65,
-    
+
         elevation: 8,
-      },
+    },
 })

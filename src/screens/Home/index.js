@@ -1,46 +1,88 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import logo from '../../assets/images/logow.png'
-import { View, StatusBar, TextInput, Image, StyleSheet, Dimensions, ScrollView, Text, TouchableOpacity, FlatList, LogBox } from 'react-native'
+import { ActivityIndicator, RefreshControl, View, StatusBar, TextInput, Image, StyleSheet, Dimensions, ScrollView, Text, TouchableOpacity, FlatList, LogBox } from 'react-native'
 import { SearchNormal1, DiscountShape, TicketDiscount, Gift, Star, ShoppingCart, Heart } from 'iconsax-react-native';
 import { Product } from '../../../data';
 import Onboarding from '../../components/Onboarding';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
 
 const win = Dimensions.get('window')
 LogBox.ignoreAllLogs(true)
 
 export default function Home() {
 
-  const route = useRoute()
-  useEffect(() => { //ketika halaman dijalankan pertama kali
-    showData()
-  }, [route.params?.isLoading])
-
-  const isFocus = useIsFocused() //auto refresh
+  const [loading, setLoading] = useState(true);
   const nav = useNavigation()
   const [xtProduct, setxtProduct] = useState(false)
   const [productData, setProductData] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
 
-  //fungsi utk menampilkan data
-  async function showData() {
-    try {
-      const data = await fetch('https://657585a9b2fbb8f6509d2fda.mockapi.io/luxelook/products')
-      const respon = await data.json()
-      setProductData(respon)
-      console.log(respon)
-    } catch (e) {
-      console.log(e)
-    }
-  }
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('product')
+      .onSnapshot(querySnapshot => {
+        const products = [];
+        querySnapshot.forEach(documentSnapshot => {
+          products.push({
+            ...documentSnapshot.data(),
+            id: documentSnapshot.id,
+          });
+        });
+        setProductData(products);
+        setLoading(false);
+      });
+    return () => subscriber();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      firestore()
+        .collection('product')
+        .onSnapshot(querySnapshot => {
+          const products = [];
+          querySnapshot.forEach(documentSnapshot => {
+            products.push({
+              ...documentSnapshot.data(),
+              id: documentSnapshot.id,
+            });
+          });
+          setProductData(products);
+        });
+      setRefreshing(false);
+    }, 1500);
+  }, []);
+
+  // const route = useRoute()
+  // useEffect(() => { //ketika halaman dijalankan pertama kali
+  //   showData()
+  // }, [route.params?.isLoading])
+
+  // const isFocus = useIsFocused() //auto refresh
+
+
+  // //fungsi utk menampilkan data
+  // async function showData() {
+  //   try {
+  //     const data = await fetch('https://657585a9b2fbb8f6509d2fda.mockapi.io/luxelook/products')
+  //     const respon = await data.json()
+  //     setProductData(respon)
+  //     console.log(respon)
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // } 
 
   function ItemProduct({ item }) {
     return (
-      <TouchableOpacity style={styles.recContainer2} onPress={() => nav.navigate('detailProduct', { data: item })}>
+      <TouchableOpacity style={styles.recContainer2} onPress={() => nav.navigate('DetailProduct', { data: item })}>
         <Image style={styles.recImage} source={{ uri: item.image }} />
         <TouchableOpacity onPress={() => onSelectedFav(item)} style={{ position: 'absolute', right: 0, padding: 2 }}>
           <Heart variant={item.selected ? 'Bold' : 'linear'} color={item.selected ? '#FF8A65' : '#D1D1D1'} />
         </TouchableOpacity>
-        <Text style={styles.recDesk}>{item.name}</Text>
+        <Text style={styles.recDesk}>{item.nameProduct}</Text>
         <Text style={styles.recPrice}>{item.price}</Text>
       </TouchableOpacity>
     )
@@ -56,7 +98,11 @@ export default function Home() {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <StatusBar translucent backgroundColor={'rgba(0,0,0,0)'} barStyle={'dark-content'} />
       <View style={styles.header}></View>
       <Image style={styles.logoHeader} source={logo} />
@@ -98,6 +144,7 @@ export default function Home() {
         contentContainerStyle={styles.containerProduct}
         keyExtractor={(item, idx) => idx.toString()}
         renderItem={ItemProduct}
+
       />
     </ScrollView>
   )
