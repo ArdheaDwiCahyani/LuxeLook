@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Home, Profile, Wishlist, Notification, AddProductForm, EditProductForm } from './src/screens';
+import { Home, Profile, Wishlist, Notification, AddProductForm, EditProductForm, Register, Login, SplashScreen } from './src/screens';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -22,12 +22,15 @@ const Bottom = () => {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName='SplashScreen'>
         <Stack.Screen options={{ headerShown: false }} name='Bottom' component={Bottom} />
         <Stack.Screen options={{ headerShown: false }} name='Notification' component={Notification} />
         <Stack.Screen options={{ headerShown: false }} name='AddProduct' component={AddProductForm}/>
         <Stack.Screen options={{ headerShown: false }} name='DetailProduct' component={DetailProduct}/>
         <Stack.Screen options={{ headerShown: false }} name='editProduct' component={EditProductForm}/>
+        <Stack.Screen options={{ headerShown: false }} name='Register' component={Register}/>
+        <Stack.Screen options={{ headerShown: false }} name='Login' component={Login}/>
+        <Stack.Screen options={{ headerShown: false }} name='SplashScreen' component={SplashScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

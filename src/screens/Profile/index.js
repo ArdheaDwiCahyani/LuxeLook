@@ -2,13 +2,23 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { View, Text, Image, ScrollView, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native'
 import { BoxTime, BoxRemove, Trash, TruckTime, Add, Setting2, ShoppingCart, Note, ArrowRight2, Wallet, Box, TruckFast, MedalStar, Key, Location, ProfileDelete, MessageQuestion, LogoutCurve } from 'iconsax-react-native'
 import profile from '../../assets/images/profile.jpg'
-import { useNavigation } from '@react-navigation/native'
-import firestore from '@react-native-firebase/firestore';
+import { StackActions, useNavigation } from '@react-navigation/native'
+import auth from '@react-native-firebase/auth'
+
 
 const win = Dimensions.get('window')
 const Account = () => {
     const navigation = useNavigation();
-    
+
+    async function logout() {
+        try {
+            await auth().signOut()
+            navigation.dispatch(StackActions.replace('Login'))
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView>
@@ -83,7 +93,7 @@ const Account = () => {
                             <Text style={styles.menuText}>Delete Account Inquiry</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.menuContentContainer}>
+                    <TouchableOpacity style={styles.menuContentContainer} onPress={() => logout()}>
                         <View style={styles.menuInfo}>
                             <LogoutCurve size={20} variant='Linear' color='black' />
                             <Text style={styles.menuText}>Log Out</Text>
